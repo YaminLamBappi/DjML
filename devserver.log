@@ -1,0 +1,20 @@
+nohup: ignoring input
+Watching for file changes with StatReloader
+[23/Oct/2025 23:01:16] "HEAD /static/css/layout.master.css HTTP/1.1" 200 0
+[23/Oct/2025 23:01:27] "GET /api/notifications/ HTTP/1.1" 200 3707
+[23/Oct/2025 23:01:28] "GET / HTTP/1.1" 200 47120
+[23/Oct/2025 23:01:28] "GET /static/css/layout.master.css HTTP/1.1" 200 9802
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+[23/Oct/2025 23:01:28] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4930
+[23/Oct/2025 23:01:28] "GET /api/notifications/ HTTP/1.1" 200 3707
+[23/Oct/2025 23:01:38] "POST /api/notifications/generate-dynamic/ HTTP/1.1" 200 578
+[23/Oct/2025 23:01:54] "GET / HTTP/1.1" 200 47120
+[23/Oct/2025 23:01:54] "GET /api/notifications/ HTTP/1.1" 200 3696
+[23/Oct/2025 23:02:04] "POST /api/notifications/generate-dynamic/ HTTP/1.1" 200 569
+[23/Oct/2025 23:02:24] "GET /api/notifications/ HTTP/1.1" 200 3724
+[23/Oct/2025 23:02:54] "GET /api/notifications/ HTTP/1.1" 200 3724
+[23/Oct/2025 23:03:24] "GET /api/notifications/ HTTP/1.1" 200 3724
+[23/Oct/2025 23:03:54] "GET /api/notifications/ HTTP/1.1" 200 3724
+[23/Oct/2025 23:04:24] "GET /api/notifications/ HTTP/1.1" 200 3724
+[23/Oct/2025 23:04:54] "GET /api/notifications/ HTTP/1.1" 200 3724
+[23/Oct/2025 23:05:24] "GET /api/notifications/ HTTP/1.1" 200 3724

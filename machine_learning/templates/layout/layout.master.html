@@ -1,0 +1,1084 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I D</title>
+    <!-- 
+        Create the CSS file at:
+        machine_learning/static/css/layout.master.css
+
+        Example path for Django project (static files):
+        [your_project_root]/machine_learning/static/css/layout.master.css
+
+        This <link> tag expects the file to exist there so you can add your styles in it.
+     -->
+    <link rel="stylesheet" href="{% static 'css/layout.master.css' %}">
+</head>
+<body>
+    <div class="custom-cursor" id="cursor"></div>
+    
+    <div class="canvas-container">
+        <canvas id="fluidCanvas"></canvas>
+    </div>
+
+    <div class="gesture-hint">
+        Move your cursor to interact with the fluid canvas
+    </div>
+
+    <div class="content-wrapper">
+        <div class="neural-header">
+            <div class="brand">NEXUS AI</div>
+            <div class="neural-time" id="currentTime"></div>
+        </div>
+
+        <div class="morphing-grid">
+            <div class="morph-card card-1" data-service="predict">
+                <div class="card-icon" style="color: #ff006e;">🎯</div>
+                <div class="card-title">Smart Predict</div>
+                <div class="card-description">AI-powered predictions with 98% accuracy</div>
+                <div class="card-metric">
+                    <div class="metric-value" style="--metric-color: #ff006e;">847</div>
+                    <div class="metric-label">Predictions</div>
+                </div>
+            </div>
+
+            <div class="morph-card card-2" data-service="analyze">
+                <div class="card-icon" style="color: #8338ec;">📊</div>
+                <div class="card-title">Data Insights</div>
+                <div class="card-description">Transform raw data into actionable intelligence</div>
+                <div class="progress-ring">
+                    <svg width="100" height="100">
+                        <defs>
+                            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#8338ec" />
+                                <stop offset="100%" style="stop-color:#3a86ff" />
+                            </linearGradient>
+                        </defs>
+                        <circle class="bg" cx="50" cy="50" r="42"></circle>
+                        <circle class="progress" cx="50" cy="50" r="42" 
+                                stroke-dasharray="264" stroke-dashoffset="66"></circle>
+                        <text x="50" y="55" text-anchor="middle" fill="#fff" font-size="20" font-weight="700">75%</text>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="morph-card card-3" data-service="assistant">
+                <div class="card-icon" style="color: #3a86ff;">🤖</div>
+                <div class="card-title">AI Companion</div>
+                <div class="card-description">Your 24/7 intelligent assistant</div>
+                <div class="card-metric">
+                    <div class="metric-value" style="--metric-color: #3a86ff;">2.4k</div>
+                    <div class="metric-label">Conversations</div>
+                </div>
+            </div>
+
+            <div class="morph-card card-4" data-service="vision">
+                <div class="card-icon" style="color: #fb5607;">📸</div>
+                <div class="card-title">Vision AI</div>
+                <div class="card-description">Advanced image recognition & processing</div>
+                <div class="mini-graph">
+                    <div class="graph-bar" style="--bar-color: #fb5607; left: 0%; height: 40%;"></div>
+                    <div class="graph-bar" style="--bar-color: #fb5607; left: 11%; height: 60%;"></div>
+                    <div class="graph-bar" style="--bar-color: #fb5607; left: 22%; height: 45%;"></div>
+                    <div class="graph-bar" style="--bar-color: #fb5607; left: 33%; height: 75%;"></div>
+                    <div class="graph-bar" style="--bar-color: #fb5607; left: 44%; height: 55%;"></div>
+                    <div class="graph-bar" style="--bar-color: #fb5607; left: 55%; height: 85%;"></div>
+                    <div class="graph-bar" style="--bar-color: #fb5607; left: 66%; height: 70%;"></div>
+                    <div class="graph-bar" style="--bar-color: #fb5607; left: 77%; height: 90%;"></div>
+                    <div class="graph-bar" style="--bar-color: #fb5607; left: 88%; height: 100%;"></div>
+                </div>
+            </div>
+
+            <div class="morph-card card-5" data-service="trends">
+                <div class="card-icon" style="color: #ffbe0b;">🔮</div>
+                <div class="card-title">Trend Radar</div>
+                <div class="card-description">Forecast market trends before they happen</div>
+                <div class="card-metric">
+                    <div class="metric-value" style="--metric-color: #ffbe0b;">+23%</div>
+                    <div class="metric-label">Growth</div>
+                </div>
+            </div>
+
+            <div class="morph-card card-6" data-service="documents">
+                <div class="card-icon" style="color: #06ffa5;">📝</div>
+                <div class="card-title">Doc Scanner</div>
+                <div class="card-description">Intelligent document processing</div>
+                <div class="card-metric">
+                    <div class="metric-value" style="--metric-color: #06ffa5;">1.2k</div>
+                    <div class="metric-label">Processed</div>
+                </div>
+            </div>
+
+            <div class="morph-card card-7" data-service="sentiment">
+                <div class="card-icon" style="color: #ff006e;">💬</div>
+                <div class="card-title">Sentiment AI</div>
+                <div class="card-description">Understand emotions in text & voice</div>
+                <div class="card-metric">
+                    <div class="metric-value" style="--metric-color: #ff006e;">89%</div>
+                    <div class="metric-label">Positive</div>
+                </div>
+            </div>
+
+            <div class="morph-card card-8" data-service="security">
+                <div class="card-icon" style="color: #8338ec;">🛡️</div>
+                <div class="card-title">Smart Security</div>
+                <div class="card-description">AI-powered threat detection</div>
+                <div class="card-metric">
+                    <div class="metric-value" style="--metric-color: #8338ec;">100%</div>
+                    <div class="metric-label">Protected</div>
+                </div>
+            </div>
+
+            <div class="morph-card card-9" data-service="automation">
+                <div class="card-icon" style="color: #3a86ff;">⚡</div>
+                <div class="card-title">Auto Workflow</div>
+                <div class="card-description">Automate repetitive tasks with AI precision</div>
+                <div class="card-metric">
+                    <div class="metric-value" style="--metric-color: #3a86ff;">45h</div>
+                    <div class="metric-label">Saved</div>
+                </div>
+            </div>
+
+            <div class="morph-card card-10" data-service="collaboration">
+                <div class="card-icon" style="color: #fb5607;">👥</div>
+                <div class="card-title">Team Sync</div>
+                <div class="card-description">Real-time collaborative intelligence</div>
+                <div class="card-metric">
+                    <div class="metric-value" style="--metric-color: #fb5607;">28</div>
+                    <div class="metric-label">Members</div>
+                </div>
+            </div>
+
+            <div class="morph-card card-11" data-service="export">
+                <div class="card-icon" style="color: #06ffa5;">📤</div>
+                <div class="card-title">Quick Export</div>
+                <div class="card-description">Export insights in any format</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="floating-nav">
+        <div class="nav-item active" data-nav="home">🏠</div>
+        <div class="nav-item" data-nav="explore">🧭</div>
+        <div class="nav-item" data-nav="analytics">📈</div>
+        <div class="nav-item" data-nav="settings">⚙️</div>
+        <div class="nav-item" data-nav="profile">👤</div>
+    </div>
+
+    <div class="voice-orb" id="voiceOrb">🎤</div>
+
+    <script>
+        // Custom Cursor
+        const cursor = document.getElementById('cursor');
+        const trails = [];
+        let mouseX = 0, mouseY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            cursor.style.left = mouseX + 'px';
+            cursor.style.top = mouseY + 'px';
+
+            // Create trail
+            if (Math.random() > 0.7) {
+                const trail = document.createElement('div');
+                trail.className = 'cursor-trail';
+                trail.style.left = mouseX + 'px';
+                trail.style.top = mouseY + 'px';
+                document.body.appendChild(trail);
+                
+                setTimeout(() => {
+                    trail.style.opacity = '0';
+                    trail.style.transform = 'scale(0)';
+                    setTimeout(() => trail.remove(), 300);
+                }, 100);
+            }
+        });
+
+        // Fluid Canvas
+        const canvas = document.getElementById('fluidCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particles = [];
+        const particleCount = 100;
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.radius = Math.random() * 2 + 1;
+                this.color = `hsla(${Math.random() * 360}, 70%, 50%, 0.3)`;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Bounce
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+
+                // Mouse interaction
+                const dx = mouseX - this.x;
+                const dy = mouseY - this.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < 150) {
+                    this.vx += dx * 0.0001;
+                    this.vy += dy * 0.0001;
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+
+        function animate() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            // Connect particles
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < 120) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${0.1 * (1 - dist / 120)})`;
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        // Card hover effect
+        const cards = document.querySelectorAll('.morph-card');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width) * 100;
+                const y = ((e.clientY - rect.top) / rect.height) * 100;
+                card.style.setProperty('--mouse-x', x + '%');
+                card.style.setProperty('--mouse-y', y + '%');
+            });
+
+            card.addEventListener('click', function() {
+                const service = this.getAttribute('data-service');
+                const title = this.querySelector('.card-title').textContent;
+                console.log('Opening:', service);
+                // Django redirect: window.location.href = `/service/${service}`;
+                alert(`Opening ${title}...`);
+            });
+        });
+
+        // Nav items
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+            item.addEventListener('click', function() {
+                navItems.forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                const nav = this.getAttribute('data-nav');
+                console.log('Navigate to:', nav);
+            });
+        });
+
+        // Voice orb
+        const voiceOrb = document.getElementById('voiceOrb');
+        voiceOrb.addEventListener('click', () => {
+            voiceOrb.innerHTML = '⏸️';
+            setTimeout(() => {
+                voiceOrb.innerHTML = '🎤';
+                alert('Voice command activated!\n\nSay: "Predict sales" or "Analyze data"');
+            }, 2000);
+        });
+
+        // Time update
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = 
+                now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        }
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        // Resize handler
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Graph animation
+        const graphBars = document.querySelectorAll('.graph-bar');
+        graphBars.forEach((bar, i) => {
+            bar.style.animationDelay = i * 0.1 + 's';
+        });
+
+        // Magnetic effect for cards
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                const icon = this.querySelector('.card-icon');
+                icon.style.transform = 'scale(1.2) rotate(5deg)';
+            });
+
+            card.addEventListener('mouseleave', function() {
+                const icon = this.querySelector('.card-icon');
+                icon.style.transform = 'scale(1) rotate(0deg)';
+            });
+        });
+
+        // Parallax scroll effect
+        let scrollY = 0;
+        window.addEventListener('scroll', () => {
+            scrollY = window.scrollY;
+            cards.forEach((card, i) => {
+                const speed = (i % 3 + 1) * 0.1;
+                card.style.transform = `translateY(${scrollY * speed}px)`;
+            });
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === '/') {
+                e.preventDefault();
+                alert('Quick Search: Press / to search services\n\nAvailable commands:\n- predict\n- analyze\n- vision\n- trends');
+            }
+            if (e.ctrlKey && e.key === 'k') {
+                e.preventDefault();
+                voiceOrb.click();
+            }
+        });
+
+        // Touch gestures for mobile
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            const touchEndX = e.changedTouches[0].clientX;
+            const touchEndY = e.changedTouches[0].clientY;
+            
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = touchEndY - touchStartY;
+
+            // Swipe detection
+            if (Math.abs(deltaX) > 100 && Math.abs(deltaY) < 50) {
+                if (deltaX > 0) {
+                    console.log('Swipe right - Previous section');
+                } else {
+                    console.log('Swipe left - Next section');
+                }
+            }
+        });
+
+        // Dynamic color theme based on time
+        function updateTheme() {
+            const hour = new Date().getHours();
+            let gradient;
+
+            if (hour >= 6 && hour < 12) {
+                // Morning - warm colors
+                gradient = 'linear-gradient(135deg, #ff6b6b 0%, #feca57 50%, #48dbfb 100%)';
+            } else if (hour >= 12 && hour < 18) {
+                // Afternoon - vibrant colors
+                gradient = 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)';
+            } else if (hour >= 18 && hour < 22) {
+                // Evening - sunset colors
+                gradient = 'linear-gradient(135deg, #fa8231 0%, #c44569 50%, #773344 100%)';
+            } else {
+                // Night - dark colors
+                gradient = 'linear-gradient(135deg, #141e30 0%, #243b55 50%, #0f2027 100%)';
+            }
+
+            document.body.style.background = gradient;
+        }
+
+        updateTheme();
+        setInterval(updateTheme, 60000); // Update every minute
+
+        // Card interaction ripple effect
+        cards.forEach(card => {
+            card.addEventListener('click', function(e) {
+                const ripple = document.createElement('div');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.style.position = 'absolute';
+                ripple.style.borderRadius = '50%';
+                ripple.style.background = 'rgba(255, 255, 255, 0.4)';
+                ripple.style.transform = 'scale(0)';
+                ripple.style.animation = 'ripple-effect 0.6s ease-out';
+                ripple.style.pointerEvents = 'none';
+
+                this.appendChild(ripple);
+
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+
+        // Add ripple animation
+        const rippleStyle = document.createElement('style');
+        rippleStyle.textContent = `
+            @keyframes ripple-effect {
+                to {
+                    transform: scale(2);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(rippleStyle);
+
+        // Contextual help system
+        let helpTimeout;
+        document.addEventListener('mousemove', () => {
+            clearTimeout(helpTimeout);
+            helpTimeout = setTimeout(() => {
+                const hint = document.createElement('div');
+                hint.textContent = '💡 Tip: Double-click any card for quick actions';
+                hint.style.position = 'fixed';
+                hint.style.bottom = '120px';
+                hint.style.left = '50%';
+                hint.style.transform = 'translateX(-50%)';
+                hint.style.background = 'rgba(0, 0, 0, 0.8)';
+                hint.style.padding = '15px 30px';
+                hint.style.borderRadius = '50px';
+                hint.style.fontSize = '14px';
+                hint.style.zIndex = '1000';
+                hint.style.animation = 'fadeInUp 0.5s ease';
+                document.body.appendChild(hint);
+
+                setTimeout(() => {
+                    hint.style.animation = 'fadeOut 0.5s ease';
+                    setTimeout(() => hint.remove(), 500);
+                }, 3000);
+            }, 5000);
+        });
+
+        // Double click for quick actions
+        cards.forEach(card => {
+            card.addEventListener('dblclick', function() {
+                const service = this.getAttribute('data-service');
+                alert(`Quick Action Menu for ${service}:\n\n1. View Details\n2. Start Service\n3. View History\n4. Settings\n5. Share`);
+            });
+        });
+
+        // Dynamic notification system
+        let notificationContainer = null;
+        let unreadCount = 0;
+        let nextNotificationTime = Date.now() + 2000; // Initial delay
+        let notificationInterval = null;
+        
+        // Global configuration
+        let NOTIFICATIONS_PER_CYCLE = 1;
+        let CYCLE_INTERVAL_MINUTES = 60;
+    // Network/error handling for fetch
+    let notificationsFetchFailures = 0;
+    const NOTIFICATIONS_MAX_FAILURES = 6; // how many consecutive failures before backing off
+    let notificationsAutoRefreshIntervalId = null;
+    let notificationsBackoffUntil = 0; // timestamp until which we won't retry
+    let notificationsErrorBanner = null;
+        
+        function initNotificationSystem() {
+            // Create notification container
+            notificationContainer = document.createElement('div');
+            notificationContainer.id = 'notification-container';
+            notificationContainer.style.position = 'fixed';
+            notificationContainer.style.top = '20px';
+            notificationContainer.style.right = '20px';
+            notificationContainer.style.zIndex = '10000';
+            notificationContainer.style.maxWidth = '400px';
+            document.body.appendChild(notificationContainer);
+            
+            // Load initial notifications
+            loadNotifications();
+            
+            // Set up auto-refresh
+            setInterval(loadNotifications, 30000); // Refresh every 30 seconds
+            
+            // Start dynamic notification system
+            startDynamicNotificationSystem();
+        }
+        
+        function showNotificationsError(message) {
+            // Only one banner at a time
+            if (notificationsErrorBanner) return;
+            notificationsErrorBanner = document.createElement('div');
+            notificationsErrorBanner.style.position = 'fixed';
+            notificationsErrorBanner.style.bottom = '20px';
+            notificationsErrorBanner.style.left = '20px';
+            notificationsErrorBanner.style.background = 'rgba(200,50,50,0.95)';
+            notificationsErrorBanner.style.color = 'white';
+            notificationsErrorBanner.style.padding = '10px 16px';
+            notificationsErrorBanner.style.borderRadius = '8px';
+            notificationsErrorBanner.style.zIndex = '10001';
+            notificationsErrorBanner.style.fontSize = '14px';
+            notificationsErrorBanner.textContent = message;
+            document.body.appendChild(notificationsErrorBanner);
+            // Auto-remove after 10s
+            setTimeout(() => {
+                if (notificationsErrorBanner && notificationsErrorBanner.parentNode) {
+                    notificationsErrorBanner.remove();
+                }
+                notificationsErrorBanner = null;
+            }, 10000);
+        }
+
+        async function loadNotifications() {
+            const now = Date.now();
+            if (notificationsBackoffUntil && now < notificationsBackoffUntil) {
+                // We're currently backing off — skip this run
+                return;
+            }
+
+            try {
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 8000); // 8s timeout
+
+                const response = await fetch('/api/notifications/', { signal: controller.signal });
+                clearTimeout(timeout);
+
+                if (!response.ok) {
+                    // Non-2xx responses (could be 302 redirect to login) — handle gracefully
+                    console.warn('Notifications fetch returned non-ok status:', response.status);
+                    notificationsFetchFailures += 1;
+                    if (notificationsFetchFailures >= NOTIFICATIONS_MAX_FAILURES) {
+                        notificationsBackoffUntil = Date.now() + 60000; // back off 60s
+                        showNotificationsError('Notification service unreachable — backing off retries.');
+                    }
+                    return;
+                }
+
+                const data = await response.json();
+                notificationsFetchFailures = 0; // reset failures on success
+                unreadCount = data.unread_count;
+                displayNotifications(data.notifications);
+            } catch (err) {
+                // Network error or abort
+                console.warn('Error loading notifications:', err && err.name ? err.name : err);
+                notificationsFetchFailures += 1;
+                if (notificationsFetchFailures >= NOTIFICATIONS_MAX_FAILURES) {
+                    notificationsBackoffUntil = Date.now() + 60000; // back off 60s
+                    showNotificationsError('Notification service unreachable — backing off retries.');
+                }
+            }
+        }
+        
+        function displayNotifications(notifications) {
+            if (!notificationContainer) return;
+            
+            // Clear existing notifications
+            notificationContainer.innerHTML = '';
+            
+            // Don't show existing database notifications as popups on page load
+            // Only show new dynamic notifications generated by the system
+            // This prevents showing 3 notifications every time the page loads
+        }
+        
+        function startDynamicNotificationSystem() {
+            // Configuration: How many notifications in how many hours
+            NOTIFICATIONS_PER_CYCLE = 1;        // How many notifications to show each time
+            CYCLE_INTERVAL_MINUTES = 60;         // How often to show notifications (in minutes) - 1 hour
+            const INITIAL_DELAY_SECONDS = 10;          // Initial delay before first notifications
+            
+            const CYCLE_INTERVAL_MS = CYCLE_INTERVAL_MINUTES * 60 * 1000; // Convert to milliseconds
+            const INITIAL_DELAY_MS = INITIAL_DELAY_SECONDS * 1000;
+            
+            // Show initial notifications after specified delay
+            setTimeout(() => {
+                generateDynamicNotifications();
+                nextNotificationTime = Date.now() + CYCLE_INTERVAL_MS;
+            }, INITIAL_DELAY_MS);
+            
+            // Then show notifications at regular intervals
+            notificationInterval = setInterval(() => {
+                generateDynamicNotifications();
+                nextNotificationTime = Date.now() + CYCLE_INTERVAL_MS;
+            }, CYCLE_INTERVAL_MS);
+            
+            // Log the configuration
+            console.log(`Notification System Started:`);
+            console.log(`- ${NOTIFICATIONS_PER_CYCLE} notifications every ${CYCLE_INTERVAL_MINUTES} minutes`);
+            console.log(`- ${(NOTIFICATIONS_PER_CYCLE * 60 / CYCLE_INTERVAL_MINUTES).toFixed(1)} notifications per hour`);
+        }
+        
+        function generateDynamicNotifications() {
+            // Use the global configuration
+            console.log(`Generating ${NOTIFICATIONS_PER_CYCLE} notification(s)...`);
+            
+            // Call backend API to generate and save dynamic notifications
+            fetch('/api/notifications/generate-dynamic/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    count: NOTIFICATIONS_PER_CYCLE
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show each notification with a 1-second delay
+                    data.notifications.forEach((notification, index) => {
+                        setTimeout(() => {
+                            showNotificationPopup(notification);
+                        }, index * 1000); // 1 second delay between notifications
+                    });
+                } else {
+                    console.error('Error generating dynamic notifications:', data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error generating dynamic notifications:', error);
+            });
+        }
+        
+        function showNotificationPopup(notification) {
+            // Only show database notifications (not legacy ones)
+            if (notification.id && notification.id.startsWith('legacy-')) {
+                return; // Skip legacy notifications
+            }
+            
+            const popup = document.createElement('div');
+            popup.className = 'notification-popup';
+            popup.setAttribute('data-notification-id', notification.id);
+            popup.style.background = `linear-gradient(135deg, ${getNotificationColor(notification.type)}, ${getNotificationColor(notification.type)}cc)`;
+            popup.style.color = '#fff';
+            popup.style.padding = '15px 20px';
+            popup.style.borderRadius = '10px';
+            popup.style.marginBottom = '10px';
+            popup.style.boxShadow = '0 5px 20px rgba(0, 0, 0, 0.3)';
+            popup.style.animation = 'slideInRight 0.5s ease';
+            popup.style.cursor = 'pointer';
+            popup.style.position = 'relative';
+            
+            popup.innerHTML = `
+                <div style="display: flex; align-items: flex-start; gap: 10px;">
+                    <div style="font-size: 20px;">${getNotificationIcon(notification.type)}</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: bold; margin-bottom: 5px;">${notification.title}</div>
+                        <div style="font-size: 14px; opacity: 0.9;">${notification.message}</div>
+                        <div style="font-size: 12px; opacity: 0.7; margin-top: 5px;">
+                            ${new Date(notification.created_at).toLocaleTimeString()}
+                        </div>
+                    </div>
+                    <button onclick="closeNotificationPopup('${notification.id}')" style="background: none; border: none; color: white; font-size: 16px; cursor: pointer; padding: 5px;">✕</button>
+                </div>
+            `;
+            
+            popup.addEventListener('click', (e) => {
+                // Don't navigate if clicking the close button
+                if (e.target.tagName === 'BUTTON') return;
+                
+                // Show notification details in modal
+                showNotificationDetails(notification);
+            });
+            
+            notificationContainer.appendChild(popup);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (popup.parentNode) {
+                    popup.style.animation = 'slideOutRight 0.5s ease';
+                    setTimeout(() => popup.remove(), 500);
+                }
+            }, 5000);
+        }
+        
+        function getNotificationColor(type) {
+            const colors = {
+                info: '#3a86ff',
+                success: '#06ffa5',
+                warning: '#ffbe0b',
+                error: '#ff006e',
+                training: '#8b5cf6',
+                prediction: '#06b6d4',
+                system: '#6b7280'
+            };
+            return colors[type] || colors.info;
+        }
+        
+        function getNotificationIcon(type) {
+            const icons = {
+                info: 'ℹ️',
+                success: '✅',
+                warning: '⚠️',
+                error: '❌',
+                training: '🤖',
+                prediction: '🧠',
+                system: '⚙️'
+            };
+            return icons[type] || icons.info;
+        }
+        
+        function markNotificationAsRead(notificationId) {
+            // Only handle database notifications (UUID format)
+            if (notificationId.startsWith('legacy-') || !notificationId.includes('-')) {
+                console.log('Skipping legacy notification:', notificationId);
+                return;
+            }
+            
+            fetch(`/notifications/${notificationId}/read/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    loadNotifications(); // Refresh notifications
+                }
+            })
+            .catch(error => console.error('Error marking notification as read:', error));
+        }
+        
+        function closeNotificationPopup(notificationId) {
+            const popup = document.querySelector(`[data-notification-id="${notificationId}"]`);
+            if (popup) {
+                popup.style.animation = 'slideOutRight 0.5s ease';
+                setTimeout(() => popup.remove(), 500);
+            }
+        }
+        
+        function showNotificationDetails(notification) {
+            // Create modal overlay
+            const modal = document.createElement('div');
+            modal.id = 'notification-modal';
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.width = '100%';
+            modal.style.height = '100%';
+            modal.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+            modal.style.zIndex = '20000';
+            modal.style.display = 'flex';
+            modal.style.alignItems = 'center';
+            modal.style.justifyContent = 'center';
+            modal.style.cursor = 'pointer';
+            modal.style.animation = 'fadeIn 0.3s ease';
+            
+            // Create modal content
+            const modalContent = document.createElement('div');
+            modalContent.style.backgroundColor = '#1a1a1a';
+            modalContent.style.borderRadius = '15px';
+            modalContent.style.padding = '30px';
+            modalContent.style.maxWidth = '600px';
+            modalContent.style.width = '90%';
+            modalContent.style.maxHeight = '80vh';
+            modalContent.style.overflowY = 'auto';
+            modalContent.style.cursor = 'default';
+            modalContent.style.border = '2px solid #333';
+            modalContent.style.boxShadow = '0 20px 60px rgba(0, 0, 0, 0.5)';
+            modalContent.style.animation = 'slideInUp 0.3s ease';
+            
+            // Build notification details HTML
+            const priorityColor = getNotificationColor(notification.type);
+            const icon = getNotificationIcon(notification.type);
+            const isDynamic = notification.metadata && notification.metadata.isDynamic;
+            
+            // Only show database notifications in modal
+            if (notification.id && notification.id.startsWith('legacy-')) {
+                closeNotificationModal();
+                return;
+            }
+            
+            modalContent.innerHTML = `
+                <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                    <div style="font-size: 32px; margin-right: 15px;">${icon}</div>
+                    <div style="flex: 1;">
+                        <h2 style="margin: 0; color: #fff; font-size: 24px;">${notification.title}</h2>
+                        <div style="display: flex; gap: 10px; margin-top: 5px; flex-wrap: wrap;">
+                            <span style="background: ${priorityColor}; color: white; padding: 4px 8px; border-radius: 12px; font-size: 12px; text-transform: uppercase;">
+                                ${notification.priority}
+                            </span>
+                            <span style="background: rgba(255, 255, 255, 0.1); color: #ccc; padding: 4px 8px; border-radius: 12px; font-size: 12px; text-transform: uppercase;">
+                                ${notification.type}
+                            </span>
+                            ${isDynamic ? '<span style="background: #06ffa5; color: #000; padding: 4px 8px; border-radius: 12px; font-size: 12px; text-transform: uppercase;">Dynamic</span>' : ''}
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: #fff; margin-bottom: 10px;">Message</h4>
+                    <p style="color: #ccc; line-height: 1.6; margin: 0; background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 8px;">${notification.message}</p>
+                </div>
+                
+                ${notification.model_name ? `
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="color: #fff; margin-bottom: 10px;">Model Information</h4>
+                        <div style="background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 8px;">
+                            <p style="color: #ccc; margin: 0;"><strong>Model:</strong> ${notification.model_name}</p>
+                        </div>
+                    </div>
+                ` : ''}
+                
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: #fff; margin-bottom: 10px;">Details</h4>
+                    <div style="background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 8px;">
+                        <p style="color: #ccc; margin: 5px 0;"><strong>Created:</strong> ${new Date(notification.created_at).toLocaleString()}</p>
+                        <p style="color: #ccc; margin: 5px 0;"><strong>Type:</strong> ${notification.type}</p>
+                        <p style="color: #ccc; margin: 5px 0;"><strong>Priority:</strong> ${notification.priority}</p>
+                        ${isDynamic ? '<p style="color: #06ffa5; margin: 5px 0;"><strong>Status:</strong> Auto-generated</p>' : ''}
+                        ${notification.metadata && Object.keys(notification.metadata).length > 0 ? `
+                            <p style="color: #ccc; margin: 5px 0;"><strong>Metadata:</strong></p>
+                            <pre style="color: #ccc; font-size: 12px; background: rgba(0, 0, 0, 0.3); padding: 10px; border-radius: 4px; overflow-x: auto;">${JSON.stringify(notification.metadata, null, 2)}</pre>
+                        ` : ''}
+                    </div>
+                </div>
+                
+                ${notification.action_url && notification.action_text ? `
+                    <div style="margin-bottom: 20px;">
+                        <a href="${notification.action_url}" style="
+                            display: inline-block;
+                            background: ${priorityColor};
+                            color: white;
+                            padding: 12px 24px;
+                            border-radius: 8px;
+                            text-decoration: none;
+                            font-weight: bold;
+                            transition: all 0.3s ease;
+                        " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                            ${notification.action_text}
+                        </a>
+                    </div>
+                ` : ''}
+                
+                <div style="text-align: right; display: flex; gap: 10px; justify-content: flex-end;">
+                    ${!isDynamic ? `
+                        <button onclick="markNotificationAsRead('${notification.id}')" style="
+                            background: #007bff;
+                            color: white;
+                            border: none;
+                            padding: 10px 20px;
+                            border-radius: 8px;
+                            cursor: pointer;
+                            font-size: 14px;
+                        ">Mark as Read</button>
+                    ` : ''}
+                    <button onclick="closeNotificationModal()" style="
+                        background: #333;
+                        color: white;
+                        border: none;
+                        padding: 10px 20px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-size: 14px;
+                    ">Close</button>
+                </div>
+            `;
+            
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+            
+            // Close modal when clicking overlay
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeNotificationModal();
+                }
+            });
+            
+            // Store modal reference for closing
+            window.currentNotificationModal = modal;
+        }
+        
+        function closeNotificationModal() {
+            if (window.currentNotificationModal) {
+                window.currentNotificationModal.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => {
+                    window.currentNotificationModal.remove();
+                    window.currentNotificationModal = null;
+                }, 300);
+            }
+        }
+        
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        
+        // Legacy notification function removed - all notifications now come from database
+
+        // Add slide animations
+        const slideStyle = document.createElement('style');
+        slideStyle.textContent = `
+            @keyframes slideInRight {
+                from {
+                    transform: translateX(400px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            @keyframes slideOutRight {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(400px);
+                    opacity: 0;
+                }
+            }
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+            @keyframes fadeOut {
+                from {
+                    opacity: 1;
+                }
+                to {
+                    opacity: 0;
+                }
+            }
+            @keyframes slideInUp {
+                from {
+                    transform: translateY(50px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(slideStyle);
+
+        // Initialize notification system
+        initNotificationSystem();
+        
+        // Function to change notification frequency dynamically
+        function updateNotificationFrequency(notificationsPerCycle, cycleIntervalMinutes) {
+            // Clear existing interval
+            if (notificationInterval) {
+                clearInterval(notificationInterval);
+            }
+            
+            // Update global configuration
+            NOTIFICATIONS_PER_CYCLE = notificationsPerCycle;
+            CYCLE_INTERVAL_MINUTES = cycleIntervalMinutes;
+            
+            // Update configuration
+            const CYCLE_INTERVAL_MS = cycleIntervalMinutes * 60 * 1000;
+            
+            // Start new interval with new settings
+            notificationInterval = setInterval(() => {
+                generateDynamicNotifications();
+                nextNotificationTime = Date.now() + CYCLE_INTERVAL_MS;
+            }, CYCLE_INTERVAL_MS);
+            
+            console.log(`Notification frequency updated:`);
+            console.log(`- ${notificationsPerCycle} notifications every ${cycleIntervalMinutes} minutes`);
+            console.log(`- ${(notificationsPerCycle * 60 / cycleIntervalMinutes).toFixed(1)} notifications per hour`);
+        }
+        
+        // Function to create a test notification immediately
+        function createTestNotification() {
+            generateDynamicNotifications();
+        }
+        
+        // Make functions globally available for testing
+        window.generateDynamicNotifications = generateDynamicNotifications;
+        window.updateNotificationFrequency = updateNotificationFrequency;
+        window.createTestNotification = createTestNotification;
+
+        // Performance metrics tracker
+        const metrics = {
+            loadTime: performance.now(),
+            interactions: 0,
+            mostUsedService: null
+        };
+
+        cards.forEach(card => {
+            card.addEventListener('click', () => {
+                metrics.interactions++;
+                const service = card.getAttribute('data-service');
+                console.log('Metrics:', { ...metrics, lastService: service });
+            });
+        });
+
+        // Voice command simulation
+        const voiceCommands = {
+            'predict': 'predict',
+            'analyze': 'analyze',
+            'vision': 'vision',
+            'assistant': 'assistant',
+            'trends': 'trends'
+        };
+
+        function processVoiceCommand(command) {
+            const normalized = command.toLowerCase();
+            for (let key in voiceCommands) {
+                if (normalized.includes(key)) {
+                    const targetCard = document.querySelector(`[data-service="${voiceCommands[key]}"]`);
+                    if (targetCard) {
+                        targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        targetCard.click();
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    </script>
+</body>
+</html>
