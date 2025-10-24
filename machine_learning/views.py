@@ -10,12 +10,14 @@ from django.contrib.auth.models import User
 import json
 import random
 from .models import Notification, NotificationTemplate
+from .models import ServiceCard
 
 def index(request):
-    return render(request, 'layout/layout.master.html')
+    
+    services = ServiceCard.objects.all()
+    return render(request, 'layout/layout.master.html',  {'services': services})
 
 # Notification Views
-
 @login_required
 def notification_list(request):
     """List all notifications for the current user"""

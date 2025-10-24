@@ -30,140 +30,37 @@
 
     <div class="content-wrapper">
         <div class="neural-header">
-            <div class="brand">NEXUS AI</div>
+            <div class="brand">intelligence dashboard</div>
             <div class="neural-time" id="currentTime"></div>
         </div>
 
         <div class="morphing-grid">
-            <div class="morph-card card-1" data-service="predict">
-                <div class="card-icon" style="color: #ff006e;">🎯</div>
-                <div class="card-title">Smart Predict</div>
-                <div class="card-description">AI-powered predictions with 98% accuracy</div>
-                <div class="card-metric">
-                    <div class="metric-value" style="--metric-color: #ff006e;">847</div>
-                    <div class="metric-label">Predictions</div>
-                </div>
-            </div>
+            {% for card in services %}
+                <div class="morph-card" data-service="{{ card.service_key }}">
+                    <div class="card-icon" style="color: {{ card.icon_color }};">{{ card.icon }}</div>
+                    <div class="card-title" style="color: #fff;">{{ card.title }}</div>
+                    <div class="card-description">{{ card.description }}</div>
 
-            <div class="morph-card card-2" data-service="analyze">
-                <div class="card-icon" style="color: #8338ec;">📊</div>
-                <div class="card-title">Data Insights</div>
-                <div class="card-description">Transform raw data into actionable intelligence</div>
-                <div class="progress-ring">
-                    <svg width="100" height="100">
-                        <defs>
-                            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#8338ec" />
-                                <stop offset="100%" style="stop-color:#3a86ff" />
-                            </linearGradient>
-                        </defs>
-                        <circle class="bg" cx="50" cy="50" r="42"></circle>
-                        <circle class="progress" cx="50" cy="50" r="42" 
-                                stroke-dasharray="264" stroke-dashoffset="66"></circle>
-                        <text x="50" y="55" text-anchor="middle" fill="#fff" font-size="20" font-weight="700">75%</text>
-                    </svg>
-                </div>
-            </div>
+                    {% if card.metric_value %}
+                    <div class="card-metric">
+                        <div class="metric-value" style="--metric-color: {{ card.metric_color|default:'#fff' }};">
+                            {{ card.metric_value }}
+                        </div>
+                        <div class="metric-label">{{ card.metric_label }}</div>
+                    </div>
+                    {% endif %}
 
-            <div class="morph-card card-3" data-service="assistant">
-                <div class="card-icon" style="color: #3a86ff;">🤖</div>
-                <div class="card-title">AI Companion</div>
-                <div class="card-description">Your 24/7 intelligent assistant</div>
-                <div class="card-metric">
-                    <div class="metric-value" style="--metric-color: #3a86ff;">2.4k</div>
-                    <div class="metric-label">Conversations</div>
+                    {% if card.extra_html %}
+                        {{ card.extra_html|safe }}
+                    {% endif %}
                 </div>
-            </div>
-
-            <div class="morph-card card-4" data-service="vision">
-                <div class="card-icon" style="color: #fb5607;">📸</div>
-                <div class="card-title">Vision AI</div>
-                <div class="card-description">Advanced image recognition & processing</div>
-                <div class="mini-graph">
-                    <div class="graph-bar" style="--bar-color: #fb5607; left: 0%; height: 40%;"></div>
-                    <div class="graph-bar" style="--bar-color: #fb5607; left: 11%; height: 60%;"></div>
-                    <div class="graph-bar" style="--bar-color: #fb5607; left: 22%; height: 45%;"></div>
-                    <div class="graph-bar" style="--bar-color: #fb5607; left: 33%; height: 75%;"></div>
-                    <div class="graph-bar" style="--bar-color: #fb5607; left: 44%; height: 55%;"></div>
-                    <div class="graph-bar" style="--bar-color: #fb5607; left: 55%; height: 85%;"></div>
-                    <div class="graph-bar" style="--bar-color: #fb5607; left: 66%; height: 70%;"></div>
-                    <div class="graph-bar" style="--bar-color: #fb5607; left: 77%; height: 90%;"></div>
-                    <div class="graph-bar" style="--bar-color: #fb5607; left: 88%; height: 100%;"></div>
-                </div>
-            </div>
-
-            <div class="morph-card card-5" data-service="trends">
-                <div class="card-icon" style="color: #ffbe0b;">🔮</div>
-                <div class="card-title">Trend Radar</div>
-                <div class="card-description">Forecast market trends before they happen</div>
-                <div class="card-metric">
-                    <div class="metric-value" style="--metric-color: #ffbe0b;">+23%</div>
-                    <div class="metric-label">Growth</div>
-                </div>
-            </div>
-
-            <div class="morph-card card-6" data-service="documents">
-                <div class="card-icon" style="color: #06ffa5;">📝</div>
-                <div class="card-title">Doc Scanner</div>
-                <div class="card-description">Intelligent document processing</div>
-                <div class="card-metric">
-                    <div class="metric-value" style="--metric-color: #06ffa5;">1.2k</div>
-                    <div class="metric-label">Processed</div>
-                </div>
-            </div>
-
-            <div class="morph-card card-7" data-service="sentiment">
-                <div class="card-icon" style="color: #ff006e;">💬</div>
-                <div class="card-title">Sentiment AI</div>
-                <div class="card-description">Understand emotions in text & voice</div>
-                <div class="card-metric">
-                    <div class="metric-value" style="--metric-color: #ff006e;">89%</div>
-                    <div class="metric-label">Positive</div>
-                </div>
-            </div>
-
-            <div class="morph-card card-8" data-service="security">
-                <div class="card-icon" style="color: #8338ec;">🛡️</div>
-                <div class="card-title">Smart Security</div>
-                <div class="card-description">AI-powered threat detection</div>
-                <div class="card-metric">
-                    <div class="metric-value" style="--metric-color: #8338ec;">100%</div>
-                    <div class="metric-label">Protected</div>
-                </div>
-            </div>
-
-            <div class="morph-card card-9" data-service="automation">
-                <div class="card-icon" style="color: #3a86ff;">⚡</div>
-                <div class="card-title">Auto Workflow</div>
-                <div class="card-description">Automate repetitive tasks with AI precision</div>
-                <div class="card-metric">
-                    <div class="metric-value" style="--metric-color: #3a86ff;">45h</div>
-                    <div class="metric-label">Saved</div>
-                </div>
-            </div>
-
-            <div class="morph-card card-10" data-service="collaboration">
-                <div class="card-icon" style="color: #fb5607;">👥</div>
-                <div class="card-title">Team Sync</div>
-                <div class="card-description">Real-time collaborative intelligence</div>
-                <div class="card-metric">
-                    <div class="metric-value" style="--metric-color: #fb5607;">28</div>
-                    <div class="metric-label">Members</div>
-                </div>
-            </div>
-
-            <div class="morph-card card-11" data-service="export">
-                <div class="card-icon" style="color: #06ffa5;">📤</div>
-                <div class="card-title">Quick Export</div>
-                <div class="card-description">Export insights in any format</div>
-            </div>
+            {% endfor %}
         </div>
+
     </div>
 
     <div class="floating-nav">
         <div class="nav-item active" data-nav="home">🏠</div>
-        <div class="nav-item" data-nav="explore">🧭</div>
-        <div class="nav-item" data-nav="analytics">📈</div>
         <div class="nav-item" data-nav="settings">⚙️</div>
         <div class="nav-item" data-nav="profile">👤</div>
     </div>
@@ -363,7 +260,6 @@
             scrollY = window.scrollY;
             cards.forEach((card, i) => {
                 const speed = (i % 3 + 1) * 0.1;
-                card.style.transform = `translateY(${scrollY * speed}px)`;
             });
         });
 
@@ -473,7 +369,7 @@
             clearTimeout(helpTimeout);
             helpTimeout = setTimeout(() => {
                 const hint = document.createElement('div');
-                hint.textContent = '💡 Tip: Double-click any card for quick actions';
+                hint.textContent = '';
                 hint.style.position = 'fixed';
                 hint.style.bottom = '120px';
                 hint.style.left = '50%';
@@ -992,11 +888,9 @@
             }
             @keyframes slideInUp {
                 from {
-                    transform: translateY(50px);
                     opacity: 0;
                 }
                 to {
-                    transform: translateY(0);
                     opacity: 1;
                 }
             }

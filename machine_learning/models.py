@@ -121,3 +121,18 @@ class NotificationTemplate(models.Model):
             priority=self.priority,
             **kwargs
         )
+
+
+class ServiceCard(models.Model):
+    service_key = models.SlugField(unique=True)  # e.g. 'predict', 'analyze'
+    icon = models.CharField(max_length=10)  # store emoji
+    icon_color = models.CharField(max_length=20, default="#fff")
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    metric_value = models.CharField(max_length=50, blank=True, null=True)
+    metric_label = models.CharField(max_length=50, blank=True, null=True)
+    metric_color = models.CharField(max_length=20, blank=True, null=True)
+    extra_html = models.TextField(blank=True, null=True)  # for special stuff like SVGs or mini-graphs
+
+    def __str__(self):
+        return self.title

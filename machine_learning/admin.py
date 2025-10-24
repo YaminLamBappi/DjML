@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.urls import reverse
 from django.utils import timezone
-from .models import Notification, NotificationTemplate
+from .models import Notification, NotificationTemplate, ServiceCard
 
 @admin.register(Notification)
 class NotificationAdmin(admin.ModelAdmin):
@@ -193,3 +193,7 @@ class NotificationTemplateAdmin(admin.ModelAdmin):
         # Reactivate all templates
         NotificationTemplate.objects.all().update(is_active=True)
     test_template.short_description = "Test selected templates"
+
+@admin.register(ServiceCard)
+class ServiceCardAdmin(admin.ModelAdmin):
+    list_display = ('title', 'service_key', 'icon', 'metric_value', 'metric_label')
