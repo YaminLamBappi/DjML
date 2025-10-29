@@ -1,0 +1,308 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Intelligence Dashboard{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/layout.master.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="custom-cursor" id="cursor"></div>
+    
+    <!-- Animated Background Canvas -->
+    <div class="canvas-container">
+        <canvas id="fluidCanvas"></canvas>
+    </div>
+
+    <!-- Main Content Wrapper -->
+    <div class="content-wrapper">
+        <!-- Header -->
+        <div class="neural-header">
+            <div class="brand">{% block header_brand %}intelligence dashboard{% endblock %}</div>
+            <div class="neural-time" id="currentTime"></div>
+        </div>
+
+        <!-- Page Content Block -->
+        {% block content %}
+        <!-- Child templates will inject content here -->
+        {% endblock %}
+    </div>
+
+    {% if user.is_authenticated %}
+    <!-- Floating Navigation -->
+    <div class="floating-nav">
+        <a href="{% url 'machine_learning:index' %}" class="nav-item" data-nav="home">🏠</a>
+        <div class="nav-item" data-nav="settings">⚙️</div>
+<a href="{% url 'machine_learning:profile' %}" class="nav-item" data-nav="profile">
+    {% if user.is_authenticated %}
+        {% if user.profile_image %}
+            <img src="{{ user.profile_image.url }}" alt="Profile" 
+                 style="width:1em; height:1em; border-radius:50%; vertical-align:middle; object-fit:cover;">
+        {% else %}
+            👤
+        {% endif %}
+    {% else %}
+        👤
+    {% endif %}
+</a>
+        {% block extra_nav %}{% endblock %}
+    </div>
+    {% endif %}
+
+    <!-- Voice Assistant Orb -->
+    <div class="voice-orb" id="voiceOrb">🎤</div>
+
+    <!-- Core JavaScript -->
+    <script>
+        // ===== Custom Cursor =====
+        const cursor = document.getElementById('cursor');
+        let mouseX = 0, mouseY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursor.style.left = mouseX + 'px';
+            cursor.style.top = mouseY + 'px';
+
+            if (Math.random() > 0.7) {
+                const trail = document.createElement('div');
+                trail.className = 'cursor-trail';
+                trail.style.left = mouseX + 'px';
+                trail.style.top = mouseY + 'px';
+                document.body.appendChild(trail);
+                
+                setTimeout(() => {
+                    trail.style.opacity = '0';
+                    trail.style.transform = 'scale(0)';
+                    setTimeout(() => trail.remove(), 300);
+                }, 100);
+            }
+        });
+
+        // ===== Animated Particle Background =====
+        const canvas = document.getElementById('fluidCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particles = [];
+        const particleCount = 100;
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.radius = Math.random() * 2 + 1;
+                this.color = `hsla(${Math.random() * 360}, 70%, 50%, 0.3)`;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+
+                const dx = mouseX - this.x;
+                const dy = mouseY - this.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < 150) {
+                    this.vx += dx * 0.0001;
+                    this.vy += dy * 0.0001;
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+
+        function animate() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            // Connect nearby particles
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < 120) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${0.1 * (1 - dist / 120)})`;
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        // ===== Navigation =====
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (this.tagName !== 'A') {
+                    e.preventDefault();
+                    navItems.forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                    const nav = this.getAttribute('data-nav');
+                    console.log('Navigate to:', nav);
+                }
+            });
+        });
+
+        // ===== Voice Orb =====
+        const voiceOrb = document.getElementById('voiceOrb');
+        voiceOrb.addEventListener('click', () => {
+            voiceOrb.innerHTML = '⏸️';
+            setTimeout(() => {
+                voiceOrb.innerHTML = '🎤';
+                alert('Voice command activated!\n\nSay: "Predict sales" or "Analyze data"');
+            }, 2000);
+        });
+
+        // ===== Time Display =====
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = 
+                now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        }
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        // ===== Dynamic Theme Based on Time =====
+        function updateTheme() {
+            const hour = new Date().getHours();
+            let gradient;
+
+            if (hour >= 6 && hour < 12) {
+                gradient = 'linear-gradient(135deg, #ff6b6b 0%, #feca57 50%, #48dbfb 100%)';
+            } else if (hour >= 12 && hour < 18) {
+                gradient = 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)';
+            } else if (hour >= 18 && hour < 22) {
+                gradient = 'linear-gradient(135deg, #fa8231 0%, #c44569 50%, #773344 100%)';
+            } else {
+                gradient = 'linear-gradient(135deg, #141e30 0%, #243b55 50%, #0f2027 100%)';
+            }
+
+            document.body.style.background = gradient;
+        }
+
+        updateTheme();
+        setInterval(updateTheme, 60000);
+
+        // ===== Window Resize Handler =====
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // ===== Keyboard Shortcuts =====
+        document.addEventListener('keydown', (e) => {
+            if (e.key === '/') {
+                e.preventDefault();
+                alert('Quick Search: Press / to search services\n\nAvailable commands:\n- predict\n- analyze\n- vision\n- trends');
+            }
+            if (e.ctrlKey && e.key === 'k') {
+                e.preventDefault();
+                voiceOrb.click();
+            }
+        });
+
+        // ===== Touch Gestures =====
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            const touchEndX = e.changedTouches[0].clientX;
+            const touchEndY = e.changedTouches[0].clientY;
+            
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = touchEndY - touchStartY;
+
+            if (Math.abs(deltaX) > 100 && Math.abs(deltaY) < 50) {
+                if (deltaX > 0) {
+                    console.log('Swipe right - Previous section');
+                } else {
+                    console.log('Swipe left - Next section');
+                }
+            }
+        });
+
+        // ===== Utility Function =====
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        window.getCookie = getCookie;
+
+        // Voice command simulation
+        const voiceCommands = {
+            'predict': 'predict',
+            'analyze': 'analyze',
+            'vision': 'vision',
+            'assistant': 'assistant',
+            'trends': 'trends'
+        };
+
+        function processVoiceCommand(command) {
+            const normalized = command.toLowerCase();
+            for (let key in voiceCommands) {
+                if (normalized.includes(key)) {
+                    const targetCard = document.querySelector(`[data-service="${voiceCommands[key]}"]`);
+                    if (targetCard) {
+                        targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        targetCard.click();
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

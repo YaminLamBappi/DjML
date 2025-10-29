@@ -12,10 +12,114 @@ import random
 from .models import Notification, NotificationTemplate
 from .models import ServiceCard
 
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+
+# ---------------- Index ----------------
+@login_required
 def index(request):
-    
+    # Your existing services
+    from .models import ServiceCard
     services = ServiceCard.objects.all()
-    return render(request, 'layout/layout.master.html',  {'services': services})
+    return render(request, 'layout/layout.master.html', {'services': services})
+
+# ---------------- Signup ----------------
+def signup_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+
+        # Check for missing fields
+        if not username or not email or not password1 or not password2:
+            return render(request, 'registration/signup.html', {'error': 'All fields are required'})
+
+        # Check password match
+        if password1 != password2:
+            return render(request, 'registration/signup.html', {'error': 'Passwords do not match'})
+
+        # Check if username or email already exists
+        if User.objects.filter(username=username).exists():
+            return render(request, 'registration/signup.html', {'error': 'Username already exists'})
+
+        if User.objects.filter(email=email).exists():
+            return render(request, 'registration/signup.html', {'error': 'Email already registered'})
+
+        # Create user
+        user = User.objects.create_user(username=username, email=email, password=password1)
+        user.save()
+
+        # Log the user in immediately
+        login(request, user)
+
+        # Redirect to index page
+        return redirect('machine_learning:index')
+
+    return render(request, 'registration/signup.html')
+
+# ---------------- Login ----------------
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user:
+            login(request, user)
+            return redirect('machine_learning:index')
+        else:
+            return render(request, 'registration/login.html', {'error': 'Invalid credentials'})
+    return render(request, 'registration/login.html')
+
+# ---------------- Logout ----------------
+@login_required
+def logout_view(request):
+    logout(request)
+    return redirect('machine_learning:login')
+
+
+
+# ---------------- Profile ----------------
+@login_required
+def profile_view(request):
+    return render(request, 'profile/view.html', {'user': request.user})
+
+@login_required
+def edit_profile(request):
+    user = request.user
+
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        profile_image = request.FILES.get('profile_image')  # handle image upload
+
+        # Validation
+        if not username or not email:
+            return render(request, 'profile/edit.html', {'error': 'Username and email are required', 'user': user})
+
+        if User.objects.filter(username=username).exclude(id=user.id).exists():
+            return render(request, 'profile/edit.html', {'error': 'Username already exists', 'user': user})
+
+        if User.objects.filter(email=email).exclude(id=user.id).exists():
+            return render(request, 'profile/edit.html', {'error': 'Email already registered', 'user': user})
+
+        # Update user
+        user.username = username
+        user.email = email
+        user.first_name = first_name
+        user.last_name = last_name
+        if profile_image:
+            user.profile_image = profile_image  # from your added User field
+        user.save()
+
+        return redirect('machine_learning:profile')
+
+    return render(request, 'profile/edit.html', {'user': user})
 
 # Notification Views
 @login_required

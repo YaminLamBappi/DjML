@@ -289,11 +289,11 @@ body {
     }
 }
 
-/* Floating nav */
+/* Floating Navigation - Fixed at Bottom */
 .floating-nav {
     position: fixed;
     left: 50%;
-    bottom: 40px;
+    bottom: 25px;
     transform: translateX(-50%);
     background: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(40px);
@@ -302,8 +302,10 @@ body {
     padding: 12px 20px;
     display: flex;
     gap: 8px;
-    z-index: 100;
+    z-index: 1000;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+    max-width: calc(100% - 40px);
 }
 
 .nav-item {
@@ -317,15 +319,197 @@ body {
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
+    text-decoration: none;
+    color: #fff;
 }
 
 .nav-item:hover {
     background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-3px);
 }
 
 .nav-item.active {
     background: linear-gradient(135deg, #ff006e, #8338ec);
     box-shadow: 0 10px 30px rgba(131, 56, 236, 0.5);
+}
+
+/* Tablet devices (portrait) - 768px and below */
+@media (max-width: 768px) {
+    .floating-nav {
+        position: fixed;
+        left: 50%;
+        bottom: 20px;
+        transform: translateX(-50%);
+        padding: 10px 16px;
+        gap: 6px;
+        border-radius: 50px;
+        max-width: calc(100% - 30px);
+    }
+    
+    .nav-item {
+        width: 45px;
+        height: 45px;
+        font-size: 20px;
+    }
+    
+    /* Adjust voice orb position to avoid overlap */
+    .voice-orb {
+        bottom: 90px;
+        right: 20px;
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+    }
+}
+
+/* Mobile devices (landscape phones) - 576px and below */
+@media (max-width: 576px) {
+    .floating-nav {
+        position: fixed;
+        left: 50%;
+        bottom: 15px;
+        transform: translateX(-50%);
+        padding: 8px 12px;
+        gap: 4px;
+        border-radius: 40px;
+        max-width: calc(100% - 20px);
+    }
+    
+    .nav-item {
+        width: 42px;
+        height: 42px;
+        font-size: 18px;
+        padding: 0;
+    }
+    
+    .nav-item:hover {
+        transform: translateY(-2px);
+    }
+}
+
+/* Small mobile devices - 375px and below */
+@media (max-width: 375px) {
+    .floating-nav {
+        position: fixed;
+        left: 50%;
+        bottom: 12px;
+        transform: translateX(-50%);
+        padding: 6px 10px;
+        gap: 3px;
+        border-radius: 35px;
+        max-width: calc(100% - 16px);
+    }
+    
+    .nav-item {
+        width: 38px;
+        height: 38px;
+        font-size: 16px;
+    }
+}
+
+/* Landscape orientation on mobile - better positioning */
+@media (max-height: 500px) and (orientation: landscape) {
+    .floating-nav {
+        position: fixed;
+        left: 50%;
+        bottom: 10px;
+        transform: translateX(-50%);
+        padding: 6px 12px;
+        gap: 3px;
+    }
+    
+    .nav-item {
+        width: 38px;
+        height: 38px;
+        font-size: 16px;
+    }
+}
+
+/* iPhone SE and similar small screens - 320px and below */
+@media (max-width: 320px) {
+    .floating-nav {
+        position: fixed;
+        left: 50%;
+        bottom: 10px;
+        transform: translateX(-50%);
+        padding: 5px 8px;
+        gap: 2px;
+        border-radius: 30px;
+        max-width: calc(100% - 12px);
+    }
+    
+    .nav-item {
+        width: 35px;
+        height: 35px;
+        font-size: 15px;
+    }
+}
+
+/* Safe area for devices with notch (iOS/Android) */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+    .floating-nav {
+        bottom: calc(25px + env(safe-area-inset-bottom));
+    }
+    
+    @media (max-width: 768px) {
+        .floating-nav {
+            bottom: calc(20px + env(safe-area-inset-bottom));
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .floating-nav {
+            bottom: calc(15px + env(safe-area-inset-bottom));
+        }
+    }
+    
+    @media (max-width: 375px) {
+        .floating-nav {
+            bottom: calc(12px + env(safe-area-inset-bottom));
+        }
+    }
+}
+
+.profile-img.small-circle,
+.default-profile.small-circle {
+    width: 35px;          /* small size */
+    height: 35px;
+    border-radius: 50%;   /* makes it circular */
+    object-fit: cover;    /* ensures image fills the circle */
+    border: 1px solid rgba(255,255,255,0.3); /* optional border for visibility */
+    display: inline-block;
+    vertical-align: middle;
+}
+
+
+/* Prevent overlap with voice orb on mobile */
+@media (max-width: 768px) {
+    .voice-orb {
+        bottom: 90px !important;
+        right: 20px !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .voice-orb {
+        bottom: 80px !important;
+        right: 15px !important;
+    }
+}
+
+/* Hover effects - disabled on touch devices */
+@media (hover: hover) {
+    .nav-item:hover {
+        transform: translateY(-3px) scale(1.1);
+    }
+}
+
+/* Active/focus states for touch devices */
+@media (hover: none) {
+    .nav-item:active {
+        transform: scale(0.95);
+        background: rgba(255, 255, 255, 0.15);
+    }
 }
 
 /* Voice orb

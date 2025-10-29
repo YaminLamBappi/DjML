@@ -2,9 +2,15 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 import uuid
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+
+User.add_to_class(
+    'profile_image',
+    models.ImageField(upload_to='profile_pics/', default='profile_pics/default-avatar.png', blank=True)
+)
 
 # Create your models here.
-
 class Notification(models.Model):
     """
     Intelligent notification system for ML operations and system events

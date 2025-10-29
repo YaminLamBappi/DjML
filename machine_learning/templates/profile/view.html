@@ -1,0 +1,90 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <h2>Profile</h2>
+
+    <div class="profile-card">
+        <div class="avatar">
+            {% comment %} <img src="{% static 'images/default-avatar.png' %}" alt="User Avatar"> {% endcomment %}
+        </div>
+
+        <div class="profile-details">
+            <p><strong>Username:</strong> {{ user.username }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>First Name:</strong> {{ user.first_name|default:"-" }}</p>
+            <p><strong>Last Name:</strong> {{ user.last_name|default:"-" }}</p>
+            <p><strong>Joined:</strong> {{ user.date_joined|date:"F j, Y, g:i a" }}</p>
+        </div>
+
+        <div class="profile-actions">
+            <a href="{% url 'machine_learning:edit_profile' %}" class="btn">Edit Profile</a>
+            <a href="{% url 'machine_learning:logout' %}" class="btn logout-btn">Logout</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 80px;
+}
+
+.profile-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    padding: 30px;
+    max-width: 400px;
+    width: 90%;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+.avatar img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    margin-bottom: 20px;
+}
+
+.profile-details p {
+    font-size: 1rem;
+    margin: 5px 0;
+    color: #fff;
+}
+
+.profile-actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #fff;
+    background: linear-gradient(135deg, #3a86ff, #ff006e);
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: linear-gradient(135deg, #ff006e, #3a86ff);
+}
+
+.logout-btn {
+    background: linear-gradient(135deg, #ff3e00, #ff006e);
+}
+</style>
+{% endblock %}
